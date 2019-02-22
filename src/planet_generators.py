@@ -55,16 +55,16 @@ def piecewise_quadratic_planet(N, x):
     d33 = d32 + y33
 
     # Upper envelope region
-    b1 = 
-    c1 = 
+    b1 = (d11 - d10)/(z1 - 1.0) - a1*(z1 + 1.0)
+    c1 = d10 - a1 - b1
 
     # Lower envelope region
-    b2 = 
-    c2 = 
+    b2 = (d22 - d21)/(z2 - z1) - a2*(z2 + z1)
+    c2 = d21 - a2*z1**2 - b2*z1
 
     # Core region
-    b3 = 
-    c3 = 
+    b3 = (d32 - d33)/z2 - a3*z2
+    c3 = d33
 
     # Write the profile
     zvec = np.linspace(1, 1/N, N)
@@ -81,7 +81,8 @@ def piecewise_quadratic_planet(N, x):
     return (zvec, dvec)
 
 def mass(svec, dvec):
-    # your code here
+    dro = np.hstack((dvec[0], np.diff((dvec))))
+    m = sum(dro*(svec)**3)
     return 4*np.pi/3*m
 
 if __name__ == '__main__':
