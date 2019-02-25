@@ -1,6 +1,5 @@
 """A small collection of density profile generators with consistent syntax."""
 
-from __future__ import division
 import sys
 import numpy as np
 
@@ -79,11 +78,6 @@ def piecewise_quadratic_planet(N, x):
 
     # Return
     return (zvec, dvec)
-
-def mass(svec, dvec):
-    dro = np.hstack((dvec[0], np.diff((dvec))))
-    m = sum(dro*(svec)**3)
-    return 4*np.pi/3*m
 
 if __name__ == '__main__':
     print("alo world")

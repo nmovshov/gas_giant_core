@@ -1,6 +1,5 @@
 """A small collection of plotting methods specific to planet interior models."""
 
-from __future__ import division
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
