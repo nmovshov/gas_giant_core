@@ -22,8 +22,10 @@ def mass(svec, dvec):
     planet_generators.py.
     """
 
-    dro = np.hstack((dvec[0], np.diff((dvec))))
-    m = 4*np.pi/3*sum(dro*(svec)**3)
+    m = 0
+    #
+    # ALICE, REPLACE THIS WITH YOUR CODE
+    #
     return m
 
 def mass_variable(svec, dvec):
@@ -48,10 +50,9 @@ def mass_variable(svec, dvec):
     """
 
     mvec = np.zeros(svec.shape)
-    N = mvec.shape[0]
-    mvec[-1] = 4*np.pi/3*dvec[-1]*svec[-1]**3 # the last layer is a sphere
-    for k in range(N-1,0,-1):
-        mvec[k-1] = mvec[k] + 4*np.pi/3*dvec[k-1]*(svec[k-1]**3 - svec[k]**3)
+    #
+    # EMMA, REPLACE THIS WITH YOUR CODE
+    #
     return mvec
 
 def _test():
