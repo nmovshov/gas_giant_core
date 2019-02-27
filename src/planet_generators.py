@@ -79,5 +79,24 @@ def piecewise_quadratic_planet(N, x):
     # Return
     return (zvec, dvec)
 
+def linear_jupiter(N):
+    """Return linear density profile matching Jupiter's mass and mean radius."""
+
+    from observables import Jupiter
+    M = Jupiter.M
+    s0 = Jupiter.s0
+    slope = 3*M/s0**3/np.pi
+    z1 = 0.8; z2 = 0.2 # arbitrary
+    d10 = 0
+    d11 = d10 + slope*(1 - z1)
+    d21 = d11
+    d22 = d21 + slope*(z1 - z2)
+    d32 = d22
+    d33 = d32 + slope*(z2 - 0)
+    x = [0, d10, d11-d10, 0, d21-d11, d22-d21, 0, d32-d22, d33-d32, z1, z2]
+    svec, dvec = piecewise_quadratic_planet(N,x)
+    svec = svec*s0
+    return (svec,dvec)
+
 if __name__ == '__main__':
     print("alo world")
