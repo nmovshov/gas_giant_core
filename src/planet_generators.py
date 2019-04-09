@@ -98,5 +98,37 @@ def linear_jupiter(N):
     svec = svec*s0
     return (svec,dvec)
 
+def reference_jupiter(N):
+    """We will use this profile as a base on which to make variations."""
+
+    return linear_jupiter(N) # just as a placeholder
+
+def type_1_jupiter(N, Mc, rhoc):
+    """Type 1 is our name for a profile with a constant density core.
+
+    We have a constant density core of mass Mc (given in earth masses) and of
+    density rhoc (in kg/m^3). Above it we have a linear profile adding up to the
+    remaining planet mass.
+    """
+
+    # Some minimal input control
+    assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
+
+    # The radii can be evenly spaced as usual
+    svec = np.linspace(1, 1/N, N)
+    dvec = np.zeros_like(svec)
+
+    # First we need to determine the core radius and index in svec
+
+    # Put rhoc in dvec[indc:]
+
+    # Calculate what dvec[indc-1] must be
+
+    # Assign linear density with calculated slope to dvec[0:indc]
+
+    # And return
+    return (svec, dvec)
+
 if __name__ == '__main__':
     print("alo world")
+    print(type_1_jupiter(12,10,8000))
