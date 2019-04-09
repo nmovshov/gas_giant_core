@@ -113,10 +113,16 @@ def type_1_jupiter(N, Mc, rhoc):
 
     # Some minimal input control
     assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
+    
+    # Load Jupiter's mass and radius
+    from observables import Jupiter
+    M = Jupiter.M
+    Rm = Jupiter.s0
 
-    # The radii can be evenly spaced as usual
-    svec = np.linspace(1, 1/N, N)
-    dvec = np.zeros_like(svec)
+    # Allocate the needed vectors
+    zvec = np.linspace(1, 1/N, N) # normalized radius
+    svec = zvec*Rm                # radius in real units
+    dvec = np.zeros_like(svec)    # density placeholder
 
     # First we need to determine the core radius and index in svec
 
