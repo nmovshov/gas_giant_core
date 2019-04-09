@@ -1,7 +1,7 @@
 # Local directories
 .vscode
-*Playground
-*playground
+*Playground*
+*playground*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
