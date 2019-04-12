@@ -113,7 +113,7 @@ def type_1_jupiter(N, Mc, rhoc):
 
     # Some minimal input control
     assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
-    
+
     # Load Jupiter's mass and radius
     from observables import Jupiter
     M = Jupiter.M
@@ -125,16 +125,25 @@ def type_1_jupiter(N, Mc, rhoc):
     dvec = np.zeros_like(svec)    # density placeholder
 
     # First we need to determine the core radius and index in svec
+    Mc = Mc*5.972e24 # remember Mc is given in earth massed
+    Rc = (3*Mc/(4*np.pi*rhoc))**(1/3)
+    indc = np.argmin(np.abs(svec - Rc))
 
     # Put rhoc in dvec[indc:]
+    dvec[indc:] = rhoc
 
     # Calculate what dvec[indc-1] must be
+    Menv = M - Mc
+    d1 = 3*Menv/(Rm**3 - Rc**3)/np.pi
+    slope = -d1/(1 - zvec[indc])
 
     # Assign linear density with calculated slope to dvec[0:indc]
+    dvec[0:indc] = slope*(zvec[0:indc] - 1)
 
     # And return
     return (svec, dvec)
 
 if __name__ == '__main__':
     print("alo world")
-    print(type_1_jupiter(12,10,8000))
+    import planet_plotters
+    planet_plotters.rho_of_s(*type_1_jupiter(128,10,8000), 'r--')
