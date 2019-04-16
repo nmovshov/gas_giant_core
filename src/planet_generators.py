@@ -108,7 +108,7 @@ def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
 
     Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
-    with a constant density.
+    with a constant density, keeping total mass fixed.
     """
 
     # Some minimal input control
