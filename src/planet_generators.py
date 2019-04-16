@@ -108,7 +108,7 @@ def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
 
     Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
-    with a constant density, keeping total mass fixed.
+    with a CONSTANT density, keeping TOTAL MASS fixed.
     """
 
     # Some minimal input control
@@ -133,8 +133,42 @@ def type_1_jupiter(N, Mc):
     # And return
     return (svec, dvec)
 
+def type_2_jupiter(N, Mc):
+    """Type 2 is our name for a profile with a linear density core.
+
+    Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
+    with a LINEAR density, keeping TOTAL MASS AND CENTRAL DENSITY fixed.
+    """
+
+    # Some minimal input control
+    assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
+
+    # We start with a reference Jupiter
+    svec, dvec = reference_jupiter(N)
+    zvec = svec/svec[0]
+
+    # First we need to determine where the core goes
+    Mc = Mc*5.972e24 # remember Mc is given in earth masses
+    indc = np.argmin(np.abs(Mc - pa.mass_variable(svec, dvec)))
+    Zc = zvec[indc]
+
+    # Next we determine the linear slope, matching Mc
+    rhoc = dvec[-1]
+    rhoe = (Mc/svec[0]**3)/(np.pi*Zc**3) - rhoc/3
+    slope = (rhoe - rhoc)/Zc
+
+    # Finally, we define linear density in dvec[indc:]
+    dvec[indc:] = rhoc + slope*zvec[indc:]
+
+    # Verify we do not deviate too much from known total mass
+    from observables import Jupiter
+    assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
+
+    # And return
+    return (svec, dvec)
+
 if __name__ == '__main__':
     print("alo world")
     import planet_plotters
-    jupi = type_1_jupiter(128,10)
+    jupi = type_2_jupiter(128,30)
     planet_plotters.rho_of_s(*jupi)
