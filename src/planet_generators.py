@@ -2,6 +2,7 @@
 
 import sys
 import numpy as np
+import planet_analyzers as pa
 
 def piecewise_quadratic_planet(N, x):
     """Piecewise quadratic parameterization of planet's density profile.
@@ -103,42 +104,31 @@ def reference_jupiter(N):
 
     return linear_jupiter(N) # just as a placeholder
 
-def type_1_jupiter(N, Mc, rhoc):
+def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
 
-    We have a constant density core of mass Mc (given in earth masses) and of
-    density rhoc (in kg/m^3). Above it we have a linear profile adding up to the
-    remaining planet mass.
+    Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
+    with a constant density.
     """
 
     # Some minimal input control
     assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
 
-    # Load Jupiter's mass and radius
-    from observables import Jupiter
-    M = Jupiter.M
-    Rm = Jupiter.s0
+    # We start with a reference Jupiter
+    svec, dvec = reference_jupiter(N)
 
-    # Allocate the needed vectors
-    zvec = np.linspace(1, 1/N, N) # normalized radius
-    svec = zvec*Rm                # radius in real units
-    dvec = np.zeros_like(svec)    # density placeholder
+    # First we need to determine where the core goes
+    Mc = Mc*5.972e24 # remember Mc is given in earth masses
+    indc = np.argmin(np.abs(Mc - pa.mass_variable(svec, dvec)))
+    Rc = svec[indc]
+    rhoc = Mc/(4*np.pi/3*Rc**3)
 
-    # First we need to determine the core radius and index in svec
-    Mc = Mc*5.972e24 # remember Mc is given in earth massed
-    Rc = (3*Mc/(4*np.pi*rhoc))**(1/3)
-    indc = np.argmin(np.abs(svec - Rc))
-
-    # Put rhoc in dvec[indc:]
+    # Put constant rhoc in dvec[indc:]
     dvec[indc:] = rhoc
 
-    # Calculate what dvec[indc-1] must be
-    Menv = M - Mc
-    d1 = 3*Menv/(Rm**3 - Rc**3)/np.pi
-    slope = -d1/(1 - zvec[indc])
-
-    # Assign linear density with calculated slope to dvec[0:indc]
-    dvec[0:indc] = slope*(zvec[0:indc] - 1)
+    # Verify we do not deviate too much from known total mass
+    from observables import Jupiter
+    assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
 
     # And return
     return (svec, dvec)
@@ -146,4 +136,5 @@ def type_1_jupiter(N, Mc, rhoc):
 if __name__ == '__main__':
     print("alo world")
     import planet_plotters
-    planet_plotters.rho_of_s(*type_1_jupiter(128,10,8000), 'r--')
+    jupi = type_1_jupiter(128,10)
+    planet_plotters.rho_of_s(*jupi)
