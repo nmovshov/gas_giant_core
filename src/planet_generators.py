@@ -2,6 +2,7 @@
 
 import sys
 import numpy as np
+import planet_analyzers as pa
 
 def piecewise_quadratic_planet(N, x):
     """Piecewise quadratic parameterization of planet's density profile.
@@ -103,38 +104,71 @@ def reference_jupiter(N):
 
     return linear_jupiter(N) # just as a placeholder
 
-def type_1_jupiter(N, Mc, rhoc):
+def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
 
-    We have a constant density core of mass Mc (given in earth masses) and of
-    density rhoc (in kg/m^3). Above it we have a linear profile adding up to the
-    remaining planet mass.
+    Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
+    with a CONSTANT density, keeping TOTAL MASS fixed.
     """
 
     # Some minimal input control
     assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
-    
-    # Load Jupiter's mass and radius
+
+    # We start with a reference Jupiter
+    svec, dvec = reference_jupiter(N)
+
+    # First we need to determine where the core goes
+    Mc = Mc*5.972e24 # remember Mc is given in earth masses
+    indc = 12 # REPLACE WITH INDEX OF CLOSEST CUMULATIVE MASS (HINT: look at planet_analyzers module)
+    Rc = svec[indc]
+    rhoc = Mc/(4*np.pi/3*Rc**3)
+
+    # Put constant rhoc in dvec[indc:]
+    dvec[indc:] = rhoc
+
+    # Verify we do not deviate too much from known total mass
     from observables import Jupiter
-    M = Jupiter.M
-    Rm = Jupiter.s0
+    #assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
 
-    # Allocate the needed vectors
-    zvec = np.linspace(1, 1/N, N) # normalized radius
-    svec = zvec*Rm                # radius in real units
-    dvec = np.zeros_like(svec)    # density placeholder
+    # And return
+    return (svec, dvec)
 
-    # First we need to determine the core radius and index in svec
+def type_2_jupiter(N, Mc):
+    """Type 2 is our name for a profile with a linear density core.
 
-    # Put rhoc in dvec[indc:]
+    Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
+    with a LINEAR density, keeping TOTAL MASS AND CENTRAL DENSITY fixed.
+    """
 
-    # Calculate what dvec[indc-1] must be
+    # Some minimal input control
+    assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
 
-    # Assign linear density with calculated slope to dvec[0:indc]
+    # We start with a reference Jupiter
+    svec, dvec = reference_jupiter(N)
+    zvec = svec/svec[0]
+
+    # First we need to determine where the core goes
+    Mc = Mc*5.972e24 # remember Mc is given in earth masses
+    indc = 12 # REPLACE WITH INDEX OF CLOSEST CUMULATIVE MASS (HINT: look at planet_analyzers module)
+    Zc = zvec[indc]
+
+    # Next we determine the linear slope, matching Mc
+    rhoc = dvec[-1]
+    rhoe = rhoc # REPLACE WITH CORRECT CALCULATION (HINT: you must do an integral)
+    slope = (rhoe - rhoc)/Zc
+
+    # Finally, we define linear density in dvec[indc:]
+    dvec[indc:] = rhoc + slope*zvec[indc:]
+
+    # Verify we do not deviate too much from known total mass
+    from observables import Jupiter
+    #assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
 
     # And return
     return (svec, dvec)
 
 if __name__ == '__main__':
     print("alo world")
-    print(type_1_jupiter(12,10,8000))
+    import planet_plotters
+    jupi = type_2_jupiter(128,30)
+    planet_plotters.rho_of_s(*jupi)
