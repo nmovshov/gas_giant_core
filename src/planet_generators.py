@@ -107,14 +107,20 @@ def reference_jupiter(N):
     a1 = raw['a1'][0][0]
     a2 = raw['a2'][0][0]
     a3 = raw['a3'][0][0]
-    y10 = raw['y10'][0][0]
-    y11 = raw['y11'][0][0]
-    y21 = raw['y21'][0][0]
-    y22 = raw['y22'][0][0]
-    y32 = raw['y32'][0][0]
-    y33 = raw['y33'][0][0]
+    d10 = raw['d10'][0][0]
+    d11 = raw['d11'][0][0]
+    d21 = raw['d21'][0][0]
+    d22 = raw['d22'][0][0]
+    d32 = raw['d32'][0][0]
+    d33 = raw['d33'][0][0]
     z1 = raw['z1'][0][0]
     z2 = raw['z2'][0][0]
+    y10 = d10
+    y11 = d11 - d10
+    y21 = d21 - d10
+    y22 = d22 - d21
+    y32 = d32 - d22
+    y33 = d33 - d32
 
     svec, dvec = piecewise_quadratic_planet(N,(a1,y10,y11,a2,y21,y22,a3,y32,y33,z1,z2))
     from observables import Jupiter
