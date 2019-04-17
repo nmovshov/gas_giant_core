@@ -102,7 +102,23 @@ def linear_jupiter(N):
 def reference_jupiter(N):
     """We will use this profile as a base on which to make variations."""
 
-    return linear_jupiter(N) # just as a placeholder
+    import scipy.io as sio
+    raw = sio.loadmat('./data/mprtd_P700.mat')
+    a1 = raw['a1'][0][0]
+    a2 = raw['a2'][0][0]
+    a3 = raw['a3'][0][0]
+    y10 = raw['y10'][0][0]
+    y11 = raw['y11'][0][0]
+    y21 = raw['y21'][0][0]
+    y22 = raw['y22'][0][0]
+    y32 = raw['y32'][0][0]
+    y33 = raw['y33'][0][0]
+    z1 = raw['z1'][0][0]
+    z2 = raw['z2'][0][0]
+
+    svec, dvec = piecewise_quadratic_planet(N,(a1,y10,y11,a2,y21,y22,a3,y32,y33,z1,z2))
+    from observables import Jupiter
+    return (svec*Jupiter.s0, dvec)
 
 def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
@@ -170,5 +186,8 @@ def type_2_jupiter(N, Mc):
 if __name__ == '__main__':
     print("alo world")
     import planet_plotters
-    jupi = type_2_jupiter(128,30)
+    import planet_analyzers
+    from observables import Jupiter
+    jupi = reference_jupiter(128)
     planet_plotters.rho_of_s(*jupi)
+    print("mass is {} Mj".format(planet_analyzers.mass(*jupi)/Jupiter.M))
