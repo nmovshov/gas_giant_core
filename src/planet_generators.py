@@ -117,11 +117,10 @@ def type_1_jupiter(N, Mc):
     # First we need to determine where the core goes
     Mc = Mc*5.972e24 # remember Mc is given in earth masses
     indc = 12 # REPLACE WITH INDEX OF CLOSEST CUMULATIVE MASS (HINT: look at planet_analyzers module)
-    Rc = svec[indc]
-    rhoc = Mc/(4*np.pi/3*Rc**3)
+    rhoc = 1000 # REPLACE WITH CALCULATED VALUE; KEEPING THE PLANET MASS FIXED (Hint: mass is volume times density)
 
     # Put constant rhoc in dvec[indc:]
-    dvec[indc:] = rhoc
+    dvec = dvec # REPLACE WITH CORRECT ASSIGNMENT; PART OF DVEC SHOULD BE CHANGED
 
     # And return
     return (svec, dvec)
@@ -143,12 +142,12 @@ def type_2_jupiter(N, Mc):
     Zc = zvec[indc]
 
     # Next we determine the linear slope, matching Mc
-    rhoc = dvec[-1]
-    rhoe = rhoc # REPLACE WITH CORRECT CALCULATION (HINT: you must do an integral)
-    slope = (rhoe - rhoc)/Zc
+    rhoc = 1000 # REPLACE WITH REAL VALUE; WHAT IS DENSITY AT THE CENTER? (Hint: the END of dvec)
+    rhoe = rhoc # REPLACE WITH CALCULATED VALUE OF DENSITY AT TOP OF CORE (Hint: you need to do an integral)
+    slope = 1000 # REPLACE WITH CALCULATED VALUE; WHAT IS THE SLOPE OF THE LINE?
 
     # Finally, we define linear density in dvec[indc:]
-    dvec[indc:] = rhoc + slope*zvec[indc:]
+    dvec = dvec # REPLACE WITH CORRECT ASSIGNMENT; PART OF DVEC SHOULD BE CHANGED
 
     # And return
     return (svec, dvec)
@@ -158,6 +157,6 @@ if __name__ == '__main__':
     import planet_plotters
     import planet_analyzers
     from observables import Jupiter
-    jupi = reference_jupiter(128)
+    jupi = type_2_jupiter(128, 10)
     planet_plotters.rho_of_s(*jupi)
     print("mass is {} Mj".format(planet_analyzers.mass(*jupi)/Jupiter.M))
