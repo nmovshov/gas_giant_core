@@ -102,7 +102,7 @@ def linear_jupiter(N):
 def reference_jupiter(N):
     """We will use this profile as a base on which to make variations."""
 
-    return linear_jupiter(N)
+    return linear_jupiter(N) #PLACEHOLDER
 
 def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
@@ -110,9 +110,6 @@ def type_1_jupiter(N, Mc):
     Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
     with a CONSTANT density, keeping TOTAL MASS fixed.
     """
-
-    # Some minimal input control
-    assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
 
     # We start with a reference Jupiter
     svec, dvec = reference_jupiter(N)
@@ -126,10 +123,6 @@ def type_1_jupiter(N, Mc):
     # Put constant rhoc in dvec[indc:]
     dvec[indc:] = rhoc
 
-    # Verify we do not deviate too much from known total mass
-    from observables import Jupiter
-    assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
-
     # And return
     return (svec, dvec)
 
@@ -139,9 +132,6 @@ def type_2_jupiter(N, Mc):
     Starting with a reference Jupiter, we replace an inner Mc (in earth masses)
     with a LINEAR density, keeping TOTAL MASS AND CENTRAL DENSITY fixed.
     """
-
-    # Some minimal input control
-    assert np.isscalar(N) and N > 0, "Input 1 should be positive scalar (N)"
 
     # We start with a reference Jupiter
     svec, dvec = reference_jupiter(N)
@@ -159,10 +149,6 @@ def type_2_jupiter(N, Mc):
 
     # Finally, we define linear density in dvec[indc:]
     dvec[indc:] = rhoc + slope*zvec[indc:]
-
-    # Verify we do not deviate too much from known total mass
-    from observables import Jupiter
-    assert(np.abs(pa.mass(svec, dvec) - Jupiter.M)/Jupiter.M < 2/N)
 
     # And return
     return (svec, dvec)
