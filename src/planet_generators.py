@@ -102,7 +102,13 @@ def linear_jupiter(N):
 def reference_jupiter(N):
     """We will use this profile as a base on which to make variations."""
 
-    return linear_jupiter(N) #PLACEHOLDER
+    from observables import Jupiter
+    x = [-1.0065958e+03, 0.0000000e+00, 1.0147479e+03, -1.3393080e+03,
+        3.0463783e+01, 3.8662506e+03, 0.0000000e+00, 0.0000000e+00,
+        0.0000000e+00, 8.0000000e-01, 0.0000000e+00]
+    svec, dvec = piecewise_quadratic_planet(N, x)
+    svec = svec*Jupiter.s0
+    return (svec, dvec)
 
 def type_1_jupiter(N, Mc):
     """Type 1 is our name for a profile with a constant density core.
