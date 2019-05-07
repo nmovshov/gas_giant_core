@@ -54,13 +54,32 @@ def mass_variable(svec, dvec):
         mvec[k-1] = mvec[k] + 4*np.pi/3*dvec[k-1]*(svec[k-1]**3 - svec[k]**3)
     return mvec
 
+def distance_of_J(model_1, model_2, sigmas=(1e-4, 3e-4)):
+    """Computes the error-normalized distance between two models in J space.
+
+    Parameters:
+    ------------
+    model_1, model_2 : tuple
+        The J coeffecients for each model. Must be of same length.
+    sigmas : tuple (default (1e-4, 3e-4))
+        The uncertainty in the J calculation. Must be same length as models.
+    Returns
+    --------
+    distance : scalar
+    """
+
+    model_1 = np.array(model_1)
+    model_2 = np.array(model_2)
+    sigmas = np.array(sigmas)
+    assert (model_1.size == model_2.size), 'Models must contain same number of Js.'
+    assert (model_1.size == sigmas.size), 'sigmas must be same length as models'
+
+    # The distance formula
+    return  np.sqrt(sum(((model_1 - model_2)/sigmas)**2))
+
 def _test():
     print("alo world")
-    N = 12
-    svec = np.linspace(1, 1/N, N)
-    dvec = np.ones(svec.shape)
-    m = mass_variable(svec, dvec)
-    print(m)
+    print(distance_of_J((0,0), (1,2)))
 
 if __name__ == "__main__":
     _test()
