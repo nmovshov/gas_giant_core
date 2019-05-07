@@ -127,7 +127,8 @@ def type_1_jupiter(N, Mc):
     rhoc = Mc/(4*np.pi/3*Rc**3)
 
     # Put constant rhoc in dvec[indc:]
-    dvec[indc:] = rhoc
+    if indc < N-1:
+        dvec[indc:] = rhoc
 
     # And return
     return (svec, dvec)
@@ -154,7 +155,8 @@ def type_2_jupiter(N, Mc):
     slope = (rhoe - rhoc)/Zc
 
     # Finally, we define linear density in dvec[indc:]
-    dvec[indc:] = rhoc + slope*zvec[indc:]
+    if indc < N-1:
+        dvec[indc:] = rhoc + slope*zvec[indc:]
 
     # And return
     return (svec, dvec)
@@ -164,6 +166,6 @@ if __name__ == '__main__':
     import planet_plotters
     import planet_analyzers
     from observables import Jupiter
-    jupi = type_1_jupiter(2048, 30)
+    jupi = type_2_jupiter(2048, 0)
     planet_plotters.rho_of_s(*jupi)
     print("mass is {} Mj".format(planet_analyzers.mass(*jupi)/Jupiter.M))
