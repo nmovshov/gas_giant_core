@@ -71,6 +71,7 @@ def distance_of_J(model_1, model_2, sigmas=(1e-4, 3e-4)):
     model_1 = np.array(model_1)
     model_2 = np.array(model_2)
     sigmas = np.array(sigmas)
+    sigmas = sigmas*model_1
     assert (model_1.size == model_2.size), 'Models must contain same number of Js.'
     assert (model_1.size == sigmas.size), 'sigmas must be same length as models'
 
