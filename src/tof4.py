@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import warnings
 
-def tof4(zvec, dvec, mrot, tol=1e-6, maxiter=100, sskip=0):
+def tof4(zvec, dvec, mrot, tol=1e-6, maxiter=100, sskip=24):
     """Return gravity coefficients of mass distribution in hydrostatic equilibrium.
 
     Parameters
