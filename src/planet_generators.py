@@ -105,7 +105,7 @@ def reference_jupiter(N):
     from observables import Jupiter
     x = [-1.0065958e+03, 0.0000000e+00, 1.0147479e+03, -1.3393080e+03,
         3.0463783e+01, 3.8662506e+03, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00, 8.0000000e-01, 1.0000000e-01]
+        0.0000000e+00, 8.0000000e-01, 1.0000000e-03]
     svec, dvec = piecewise_quadratic_planet(N, x)
     svec = svec*Jupiter.s0
     return (svec, dvec)
